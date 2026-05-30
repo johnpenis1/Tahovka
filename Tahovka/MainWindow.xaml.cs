@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -25,19 +26,34 @@ namespace Tahovka
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
-            Player Guillotina = new Player(10000,0,10,30,15,10,1 );
-            Player player = new Player(2000, 400, 30, 50, 50, 30,50);
-            ///
-            ///
-            ///
-            Items Jerky = new Items("jerky", 1500, 0, 0, 3, "A piece of Jerky, Heals 1500 hp"); Items Soda = new Items("soda", 0, 200, 0, 2, "A Diet Soda, Restores 200 SP"); Items Dynamite = new Items("dynamite", 0, 0, 2000, 2, "A powerful stick of dynamite, deals 2000 damage"); Items Coffee = new Items("coffee", player.MAXHP, player.MAXSP, 0, 1,"A Quadruple Espresso, Restores SP and HP to max");
-            ///
-            ///
-            ///
-            Attacks Punch = new Attacks(20,2,0,false,1,"","You Punch with all your might"); Attacks Fireball = new Attacks(50,2,30,true,1,"a magic attack that uses SP damage, costs 30 mana", "You fire off a fireball, fire."); Attacks Flurry = new Attacks(15,2,50,false,5,"a weak attack that hits multiple times, Costs 50 Mana", "You unleash a flurry of blows"); Attacks FistOfFaith = new Attacks(100,3,100,false,1,"a High damage one hit attack", "You Channel all your Chi into the attack"); Attacks FivePointFingerHeartExplodingTechnique = new Attacks(999999,10,0,true,10,"attack that instantly kills the unit, costs nothing and is for testing (you cheater!)", "DIIIIIIIE!!!"); // these are your attacks
-            Attacks Scratch = new Attacks(20, 2, 0, false, 1,"","Guillotina scratches you!");
+            DataContext = this;
+
+
+
+            Attack Punch = new Attack(20,2,0,false,1,"","You Punch with all your might"); 
+            Attack Fireball = new Attack(50,2,30,true,1,"a magic attack that uses SP damage, costs 30 mana", "You fire off a fireball, fire."); 
+            Attack Flurry = new Attack(15,2,50,false,5,"a weak attack that hits multiple times, Costs 50 Mana", "You unleash a flurry of blows");
+            Attack FistOfFaith = new Attack(100,3,100,false,1,"a High damage one hit attack", "You Channel all your Chi into the attack"); 
+            Attack FivePointFingerHeartExplodingTechnique = new Attack(999999,10,0,true,10,"attack that instantly kills the unit, costs nothing and is for testing (you cheater!)", "DIIIIIIIE!!!"); // these are your attacks
+            Attack Scratch = new Attack(20, 2, 0, false, 1,"","Guillotina scratches you!");
+
+            Player Guillotina = new Player(10000, 0, 10, 30, 15, 10, 1, new List<Attack>() { Scratch });
+            Player player = new Player(2000, 400, 30, 50, 50, 30, 50, new List<Attack>() { Punch,Fireball,FistOfFaith,FivePointFingerHeartExplodingTechnique });
+
+
+            Items Jerky = new Items("jerky", 1500, 0, 0, 3, "A piece of Jerky, Heals 1500 hp");
+            Items Soda = new Items("soda", 0, 200, 0, 2, "A Diet Soda, Restores 200 SP");
+            Items Dynamite = new Items("dynamite", 0, 0, 2000, 2, "A powerful stick of dynamite, deals 2000 damage");
+            Items Coffee = new Items("coffee", player.MAXHP, player.MAXSP, 0, 1, "A Quadruple Espresso, Restores SP and HP to max");
+
+            AttackButton.Click += (sender, e) =>
+            {
+                CombatProcess(player,1,Guillotina,"");
+            };
         }
+
+        public int GuillotinaHP { get; set; } = 0;
+
         public string dialogue = "";
         public string flavortext = "";
         public int helpfulvalue = 0;
@@ -87,118 +103,36 @@ namespace Tahovka
         {
             ShowItemMenu(sender, e);
             HideMagicMenu(sender, e);
+            
         }
         public static void Flavor(string desc, string flavortext)
         {
             desc = flavortext;
         }
 
-        public void CombatProcess(object sender, EventArgs e, int Special,int ESpecial,int helpvalue, int loops, int helpfulloops, int health, int ehealth, int sp, int maxsp, int manacost, int basicdamage, int ebasicdamage,  int atkstat, int eatkstat, int mult, int emult, int defense, int edefense, int Sdefense, int esdefense, int Sattack, int esattack, int speed, int espeed, string dialog, int insight = 0 )
+        public void CombatProcess(Player player, int playerAttackIndex, Player enemy, string dialog, int insight = 0 )
+        {
+            Random random = new Random();
+
+            Attack playerAttack = player.Attacks[playerAttackIndex];
+            Attack enemyAttack = enemy.Attacks[random.Next(0,enemy.Attacks.Count - 1)];
+
+            if (player.SP-playerAttack.ManaValue >= 0)
             {
-            helpvalue = Special + ESpecial;
-            if (sp-manacost >= 0)
-            {
-                sp -= manacost;
-                switch (helpvalue)
+                player.SP -= playerAttack.ManaValue;
+                if (player.SPEED >= enemy.SPEED)//Checking for Speed
                 {
-                    case 0:
-                        if (speed >= espeed)//Checking for Speed
-                        {
-                            while (loops > helpfulloops)
-                            {
-                                Player.Attack(ehealth, basicdamage, atkstat, mult, edefense, insight, dialog); //this is the player attacking
-                                Thread.Sleep();
-                                helpfulloops++;
-                            }
-                            helpfulloops = 0;
-                            Player.EnemyAttack(health, ebasicdamage, eatkstat, emult, defense, insight, dialog); //this is the enemy attacking
 
-                        }
-                        else
-                        {
-                            Player.EnemyAttack(health, ebasicdamage, eatkstat, emult, defense, insight, dialog);
-                            while (loops > helpfulloops)
-                            {
-                                Player.Attack(ehealth, basicdamage, atkstat, mult, edefense, insight, dialog); //this is the player attacking
-                                helpfulloops++;//this is the enemy attacking 
-                            }
-                            helpfulloops = 0;
-                        }
-                        break;
+                    player.Attack(enemy, playerAttack, ref insight); //this is the player attacking
 
-                    case 1:
-                        if (Special == 1) // this is checking for who is using a special attack
-                        {
-                            if (speed >= espeed)//Checking for Speed
-                            {
-                                while (loops > helpfulloops)
-                                {
-                                    Player.Attack(ehealth, basicdamage, Sattack, mult, esdefense, insight, dialog); //this is the player attacking
-                                    helpfulloops++;
-                                    Console.WriteLine("Dealt " + insight + " damage'");
-                                }
-                                Player.EnemyAttack(health, ebasicdamage, eatkstat, emult, defense, insight, dialog); //this is the enemy attacking
-                            }
-                            else
-                            {
-                                Player.EnemyAttack(health, ebasicdamage, eatkstat, emult, defense, insight, dialog); //this is the enemy attacking
-                                while (loops > helpfulloops)
-                                {
-                                    Player.Attack(ehealth, basicdamage, Sattack, mult, esdefense, insight, dialog); //this is the player attacking
-                                    helpfulloops++;
-                                }
-                                helpfulloops = 0;
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            if (speed >= espeed)//Checking for Speed
-                            {
-                                while (loops > helpfulloops)
-                                {
-                                    Player.Attack(ehealth, basicdamage, atkstat, mult, edefense, insight, dialog); //this is the player attacking
-                                    helpfulloops++;
-                                }
-                                helpfulloops = 0;
-                                Player.EnemyAttack(health, ebasicdamage, esattack, emult, Sdefense, insight, dialog); //this is the enemy attacking
-                            }
-                            else
-                            {
-                                Player.EnemyAttack(health, ebasicdamage, esattack, emult, Sdefense, insight, dialog); //this is the enemy attacking
-                                while (loops > helpfulloops)
-                                {
-                                    Player.Attack(ehealth, basicdamage, atkstat, mult, edefense, insight, dialog); //this is the player attacking
-                                    helpfulloops++;
-                                }
-                                helpfulloops = 0;
-                            }
-                            break;
-                        }
-                    case 2:
-                        if (speed >= espeed)//Checking for Speed
-                        {
-                            while (loops > helpfulloops)
-                            {
-                                Player.Attack(ehealth, basicdamage, Sattack, mult, esdefense, insight, dialog); //this is the player attacking
-                                helpfulloops++;
-                            }
-                            Player.EnemyAttack(health, ebasicdamage, esattack, emult, Sdefense, insight, dialog); //this is the enemy attacking
-                            helpfulloops = 0;
-                        }
-                        else
-                        {
-                            Player.EnemyAttack(health, ebasicdamage, eatkstat, emult, esdefense, insight, dialog); //this is the enemy attacking
-                            while (loops > helpfulloops)
-                            {
-                                Player.Attack(ehealth, basicdamage, atkstat, mult, Sdefense, insight, dialog); //this is the player attacking
-                                helpfulloops++;
-                            }
-                            helpfulloops = 0;
-                        }
-                        break;
-                    default:
-                        break;
+                    enemy.Attack(player, enemyAttack, ref insight); //this is the enemy attacking
+
+                }
+                else
+                {
+                    player.Attack(enemy, playerAttack, ref insight); //this is the player attacking
+
+                    enemy.Attack(player, enemyAttack, ref insight); //this is the enemy attacking
                 }
             }
             else

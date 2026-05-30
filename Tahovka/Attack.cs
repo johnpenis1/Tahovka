@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tahovka
 {
-    internal class Attacks
+    public class Attack
     {
         public int BaseDmg { get; set; }
         public int PowerMult { get; set; }
@@ -15,7 +15,7 @@ namespace Tahovka
         public int Repeats { get; set; }
         public string FlavorText { get; set; }
         public string Description { get; set; }
-        public Attacks(int basedmg, int powermult, int manavalue, bool special, int repeats, string desc, string flavor )
+        public Attack(int basedmg, int powermult, int manavalue, bool special, int repeats, string desc, string flavor )
         {
             BaseDmg = basedmg;
             PowerMult = powermult;

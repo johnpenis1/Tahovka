@@ -8,7 +8,7 @@ using System.Windows.Documents;
 
 namespace Tahovka
 {
-    internal class Player 
+    public class Player 
     {
         public int MAXHP;
         public int HP;
@@ -19,7 +19,10 @@ namespace Tahovka
         public int SDEF;
         public int SATK;
         public int SPEED;
-        public Player(int maxhp, int maxsp, int def, int atk, int sdef, int satk, int speed)
+
+        public List<Attack> Attacks = new List<Attack>();
+
+        public Player(int maxhp, int maxsp, int def, int atk, int sdef, int satk, int speed, List<Attack> attacks)
         {
             MAXHP = maxhp;
             HP = MAXHP;
@@ -30,21 +33,27 @@ namespace Tahovka
             SDEF = sdef;
             SATK = satk;
             SPEED = speed;
+            Attacks = attacks;
 
         }
-        public static void Attack(int health, int basicdamage, int atkstat, int mult, int defense, int informativedmgvalue, string dialog) //damage 
+        public void TakeDamage(Player attacker,Attack attack, int mult, ref int damageTaken) //damage 
         {
-            {
-                health -= basicdamage + ((atkstat * mult) - defense);
-                informativedmgvalue = basicdamage + ((atkstat * mult) - defense);
-            }
+            damageTaken = attack.BaseDmg + ((attack.Special ? attacker.SATK : attacker.ATK) * mult) - (attack.Special ? SDEF : DEF);
+            HP -= damageTaken;
         }
-        public static void EnemyAttack(int ehealth, int ebasicdamage, int eatkstat, int emult, int edefense,int informativedmgvalue, string dialog) //might change this later, unsure
+
+        public void Attack(Player target,Attack attack, ref int insight)
         {
+            int loopsCompleted = 0;
+
+            while (attack.Repeats > loopsCompleted)
             {
-                ehealth -= ebasicdamage + ((eatkstat * emult) - edefense);
-                informativedmgvalue = ebasicdamage + ((eatkstat * emult) - edefense);
+                target.TakeDamage(this, attack, attack.PowerMult, ref insight); 
+                                                                                                    
+                loopsCompleted++;
             }
+
+           
         }
 
         public static void Defend(int health, int basicdamage, int atkstat, int mult, int defense, int informativedamagevalue = 0)
