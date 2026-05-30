@@ -1,0 +1,50 @@
+﻿<Window x:Class="Tahovka.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tahovka"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1018" Width="1696">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="91*"/>
+            <RowDefinition Height="55*"/>
+        </Grid.RowDefinitions>
+        <Button Content="Attack" FontSize="20"  Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Name="AttackButton" Height="72" Width="148" />
+        <Button Content="Magic" FontSize="20"  Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Name="MagicButton" Height="72" Width="148" Click="MagicShowcase" />
+        <Button Content="Items" FontSize="20"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="ItemsButton" Height="72" Width="148" Click="ItemShowcase" />
+        <Button Content="Defend" FontSize="20"  Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefendButton" Height="72" Width="148"/>
+        <TextBlock Text="Health: " Margin="0,2,70,190" Grid.Row="1"/>
+
+        <TextBlock Text="Placeholder" Margin="39,2,70,346" Grid.Row="1" Name="PlayerHPAmount"  />
+        <TextBlock Text="Placeholder" Grid.Row="1" Margin="35,31,84,324" Name="ManaAmount" />
+        <TextBlock Text="Mana:" Margin="0,30,316,324" Grid.Row="1"/>
+        <TextBlock Text="Health:" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="20,28,0,300" Grid.Column="1" Width="74" Name="HealthBoss"/>
+        <TextBlock Text="{Binding Path=GuillotinaHP, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Margin="0,50,0,0" Grid.ColumnSpan="2" Grid.Column="1" FontSize="20" Name="BossHP" HorizontalAlignment="Center"/>
+        <TextBlock Text="1" Grid.ColumnSpan="4" HorizontalAlignment="Center" TextAlignment="Center" Width="400" Name="Dialogue"/>
+        <TextBlock Text="" Grid.Row="0" Grid.Column="0" Name="FlavorText"/>
+
+        <Grid Grid.Column="3" Name="MagicMenu" Visibility="Collapsed">
+            <Button Name="Fireball" Grid.Row="0" Height="50" Content="Fireball" FontSize="20" VerticalAlignment="Top" />
+            <Button Name="Flurry" Grid.Row="0"  Height="50" Content="Flurry" FontSize="20" VerticalAlignment="Top" Margin="0,60" />
+            <Button Name="Fistoffaith" Grid.Row="0" Grid.Column="3" Height="50" Content="Fist of Faith" FontSize="20" VerticalAlignment="Top" Margin="0, 120" />
+            <Button Name="death" Grid.Row="0" Grid.Column="3" Height="50" Content="Five Point Palm Exploding Heart Technique" FontSize="20" VerticalAlignment="Top" Margin="0, 180"/>
+            <Button Grid.Row="0" Grid.Column="3" Height="50" VerticalAlignment="Top" Width="50" HorizontalAlignment="Right" Content="X" FontSize="30" Click="HideMagicMenu"/>
+        </Grid>
+        <Grid Grid.Column="3" Name="ItemMenu" Visibility="Collapsed">
+            <Button Name="Jerky" Grid.Row="0" Height="50" Content="Jerky" FontSize="20" VerticalAlignment="Top" />
+            <Button Name="Soda" Grid.Row="0"  Height="50" Content="Soda" FontSize="20" VerticalAlignment="Top" Margin="0,60" />
+            <Button Name="Dynamite" Grid.Row="0" Grid.Column="3" Height="50" Content="Dynamite" FontSize="20" VerticalAlignment="Top" Margin="0, 120" />
+            <Button Name="Coffee" Grid.Row="0" Grid.Column="3" Height="50" Content="Coffee" FontSize="20" VerticalAlignment="Top" Margin="0, 180"/>
+            <Button Grid.Row="0" Grid.Column="3" Height="50" VerticalAlignment="Top" Width="50" HorizontalAlignment="Right" Content="X" FontSize="30" Click="HideItemMenu"/>
+        </Grid>
+              
+    </Grid>
+</Window>
