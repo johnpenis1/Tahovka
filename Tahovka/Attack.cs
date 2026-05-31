@@ -8,6 +8,7 @@ namespace Tahovka
 {
     public class Attack
     {
+        public string Name { get; set; }
         public int BaseDmg { get; set; }
         public int PowerMult { get; set; }
         public int ManaValue { get; set; }
@@ -15,8 +16,9 @@ namespace Tahovka
         public int Repeats { get; set; }
         public string FlavorText { get; set; }
         public string Description { get; set; }
-        public Attack(int basedmg, int powermult, int manavalue, bool special, int repeats, string desc, string flavor )
+        public Attack(string name,int basedmg, int powermult, int manavalue, bool special, int repeats, string desc, string flavor )
         {
+            Name = name;
             BaseDmg = basedmg;
             PowerMult = powermult;
             ManaValue = manavalue;
