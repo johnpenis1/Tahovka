@@ -64,16 +64,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Attack.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="Enemy.cs" />
-    <Compile Include="HelpfulClassForStartingValues.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Player.cs" />
+    <Compile Include="Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Tahovka"
         mc:Ignorable="d"
         Title="MainWindow" Height="1018" Width="1696">
-    <Grid>
+    
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -21,13 +22,13 @@
         <Button Content="Magic" FontSize="20"  Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Name="MagicButton" Height="72" Width="148" Click="MagicShowcase" />
         <Button Content="Items" FontSize="20"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="ItemsButton" Height="72" Width="148" Click="ItemShowcase" />
         <Button Content="Defend" FontSize="20"  Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefendButton" Height="72" Width="148"/>
-        <TextBlock Text="Health: " Margin="0,2,70,190" Grid.Row="1"/>
+        <TextBlock Text="Health: " Margin="38,8,322,307" Grid.Row="1" FontSize="20"/>
 
-        <TextBlock Text="Placeholder" Margin="39,2,70,346" Grid.Row="1" Name="PlayerHPAmount"  />
-        <TextBlock Text="Placeholder" Grid.Row="1" Margin="35,31,84,324" Name="ManaAmount" />
-        <TextBlock Text="Mana:" Margin="0,30,316,324" Grid.Row="1"/>
+        <TextBlock Text="0/0" Margin="106,8,2,294" Grid.Row="1" Name="PlayerHPAmount" FontSize="20"  />
+        <TextBlock Text="0/0" Grid.Row="1" Margin="106,45,14,266" Name="ManaAmount" FontSize="20" />
+        <TextBlock Text="Mana:" Margin="38,43,278,273" Grid.Row="1" FontSize="20"/>
         <TextBlock Text="Health:" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="20,28,0,300" Grid.Column="1" Width="74" Name="HealthBoss"/>
-        <TextBlock Text="{Binding Path=GuillotinaHP, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Margin="0,50,0,0" Grid.ColumnSpan="2" Grid.Column="1" FontSize="20" Name="BossHP" HorizontalAlignment="Center"/>
+        <TextBlock Text="0/0" Grid.Row="0" Margin="0,50,0,508" Grid.ColumnSpan="2" Grid.Column="1" FontSize="20" Name="BossHP" HorizontalAlignment="Center" Width="340" TextAlignment="Center"/>
         <TextBlock Text="1" Grid.ColumnSpan="4" HorizontalAlignment="Center" TextAlignment="Center" Width="400" Name="Dialogue"/>
         <TextBlock Text="" Grid.Row="0" Grid.Column="0" Name="FlavorText"/>
 
@@ -45,6 +46,6 @@
             <Button Name="Coffee" Grid.Row="0" Grid.Column="3" Height="50" Content="Coffee" FontSize="20" VerticalAlignment="Top" Margin="0, 180"/>
             <Button Grid.Row="0" Grid.Column="3" Height="50" VerticalAlignment="Top" Width="50" HorizontalAlignment="Right" Content="X" FontSize="30" Click="HideItemMenu"/>
         </Grid>
-              
+
     </Grid>
 </Window>

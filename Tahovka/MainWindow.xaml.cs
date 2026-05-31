@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -23,45 +24,99 @@ namespace Tahovka
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        public static MainWindow i;
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+            i = this;
 
 
-
-            Attack Punch = new Attack(20,2,0,false,1,"","You Punch with all your might"); 
-            Attack Fireball = new Attack(50,2,30,true,1,"a magic attack that uses SP damage, costs 30 mana", "You fire off a fireball, fire."); 
-            Attack Flurry = new Attack(15,2,50,false,5,"a weak attack that hits multiple times, Costs 50 Mana", "You unleash a flurry of blows");
-            Attack FistOfFaith = new Attack(100,3,100,false,1,"a High damage one hit attack", "You Channel all your Chi into the attack"); 
-            Attack FivePointFingerHeartExplodingTechnique = new Attack(999999,10,0,true,10,"attack that instantly kills the unit, costs nothing and is for testing (you cheater!)", "DIIIIIIIE!!!"); // these are your attacks
-            Attack Scratch = new Attack(20, 2, 0, false, 1,"","Guillotina scratches you!");
-
-            Player Guillotina = new Player(10000, 0, 10, 30, 15, 10, 1, new List<Attack>() { Scratch });
-            Player player = new Player(2000, 400, 30, 50, 50, 30, 50, new List<Attack>() { Punch,Fireball,FistOfFaith,FivePointFingerHeartExplodingTechnique });
+            Attack Punch = new Attack("Punch",20,2,0,false,1,"","You Punch with all your might"); 
+            Attack Fireball = new Attack("Fireball",50,2,30,true,1,"a magic attack that uses SP damage, costs 30 mana", "You fire off a fireball, fire."); 
+            Attack Flurry = new Attack("Flurry", 15,2,50,false,5,"a weak attack that hits multiple times, Costs 50 Mana", "You unleash a flurry of blows.");
+            Attack FistOfFaith = new Attack("Fist of Faith",100,3,100,false,1,"a High damage one hit attack", "You Channel all your Chi into the attack."); 
+            Attack FivePointFingerHeartExplodingTechnique = new Attack("Five Point Palm Exploding Heart Technique", 999999,10,0,true,10,"attack that instantly kills the unit, costs nothing and is for testing (you cheater!)", "DIIIIIIIE!!!"); // these are your attacks
+            Attack Scratch = new Attack("Scratch",20, 2, 0, false, 1,"","Guillotina scratches you!");
 
 
-            Items Jerky = new Items("jerky", 1500, 0, 0, 3, "A piece of Jerky, Heals 1500 hp");
-            Items Soda = new Items("soda", 0, 200, 0, 2, "A Diet Soda, Restores 200 SP");
-            Items Dynamite = new Items("dynamite", 0, 0, 2000, 2, "A powerful stick of dynamite, deals 2000 damage");
-            Items Coffee = new Items("coffee", player.MAXHP, player.MAXSP, 0, 1, "A Quadruple Espresso, Restores SP and HP to max");
+            Item Jerky = new Item("jerky", 3,"A piece of Jerky, Heals 1500 hp",(unit) => { unit.HP += 1500; });
+            Item Soda = new Item("soda",2, "A Diet Soda, Restores 200 SP", (unit) => { unit.SP += 200; });
+            Item Dynamite = new Item("dynamite", 2, "A powerful stick of dynamite, deals 2000 damage", (unit) => { unit.Target.HP -= 2000; });
+            Item Coffee = new Item("coffee", 1, "A Quadruple Espresso, Restores SP and HP to max", (unit) => { unit.HP = unit.MAXHP; unit.SP = unit.MAXSP; });
+
+
+            Unit Guillotina = new Unit("Guillotina", HealthDisplay: BossHP, maxhp: 10000, def: 10, atk: 30, sdef: 15, satk: 10, speed: 1, PrimaryAttack: Scratch);
+            Unit player = new Unit("Player", HealthDisplay: PlayerHPAmount, ManaDisplay: ManaAmount, maxhp: 2000, maxsp: 400, def: 30, atk: 50, sdef: 50, satk: 30, speed: 50, PrimaryAttack: Punch, spells: new List<Attack>() { Fireball, FistOfFaith, FivePointFingerHeartExplodingTechnique, Flurry },items: Item.Items.Values.ToList());
+
+            player.Target = Guillotina;
+            Guillotina.Target = player;
+
+            // Binding primary attack
 
             AttackButton.Click += (sender, e) =>
             {
-                CombatProcess(player,1,Guillotina,"");
+                CombatProcess(player,player.primaryAttack,Guillotina);
             };
+
+            
+            // Binding spells
+
+            foreach (UIElement child in MagicMenu.Children)
+            {
+                if (child is Button button)
+                {
+                    button.Click += (sender, e) => { CastMagicSpell(button.Content.ToString(), player, Guillotina); } ;
+                }
+            }
+
+            // Binding items
+
+            foreach (UIElement child in ItemMenu.Children)
+            {
+                if (child is Button button)
+                {
+                    string buttonName = Utility.CleanseString(button.Name);
+
+                    if (!player.Items.ContainsKey(buttonName)) continue; // if the element we're looping through doesnt exist as an item, we go to the next element
+
+                    button.Click += (sender, e) => { UseItem(buttonName, player); } ;
+                    button.MouseEnter += (sender, e) => { DescriptionDisplay(player.Items[buttonName]); };
+                }
+            }
+     
+
         }
 
-        public int GuillotinaHP { get; set; } = 0;
 
-        public string dialogue = "";
-        public string flavortext = "";
-        public int helpfulvalue = 0;
-        public int helpfulvariableforloops = 0;
-        public int iwon = 0;
-        public int ilost = 0;
-        public int insight = 0;
-        public string dmgvaluetranslator = "";
+        // UI
+
+        public void DisplayDialgue(string dialogue)
+        {
+            Dialogue.Text = dialogue;
+            
+        }
+
+        public void CastMagicSpell(string spellName, Unit player, Unit enemy)
+        {
+
+            CombatProcess(player, player.GetAttackFrom(spellName), enemy);
+        }
+
+        public void UseItem(string itemName, Unit player)
+        {
+            player.Items[itemName].Use();
+
+        }
+
+
+        public void DescriptionDisplay(Item item)
+        {
+            FlavorText.Text = item.FLAVOR;
+        }
+
         public void HideCombatMenu(object sender, EventArgs e)
         {
             DefendButton.Visibility = Visibility.Collapsed;
@@ -105,42 +160,52 @@ namespace Tahovka
             HideMagicMenu(sender, e);
             
         }
-        public static void Flavor(string desc, string flavortext)
-        {
-            desc = flavortext;
-        }
 
-        public void CombatProcess(Player player, int playerAttackIndex, Player enemy, string dialog, int insight = 0 )
-        {
-            Random random = new Random();
+       
 
-            Attack playerAttack = player.Attacks[playerAttackIndex];
-            Attack enemyAttack = enemy.Attacks[random.Next(0,enemy.Attacks.Count - 1)];
+        // Logic
+
+        public bool turnInProgress = false;
+
+        public async void CombatProcess(Unit player, Attack playerAttack, Unit enemy)
+        {
+ 
+            Attack enemyAttack = enemy.primaryAttack;
+
+            if (enemyAttack == null || playerAttack == null || turnInProgress) return;
+            
+           
+            
 
             if (player.SP-playerAttack.ManaValue >= 0)
             {
+                turnInProgress = true;
                 player.SP -= playerAttack.ManaValue;
-                if (player.SPEED >= enemy.SPEED)//Checking for Speed
+                player.UpdateManaDisplay();
+                if (player.SPEED >= enemy.SPEED) //Checking for Speed
                 {
 
-                    player.Attack(enemy, playerAttack, ref insight); //this is the player attacking
+                    player.AttackTarget(playerAttack); //this is the player attacking
 
-                    enemy.Attack(player, enemyAttack, ref insight); //this is the enemy attacking
+                    await Task.Delay(2000); 
 
+                    enemy.AttackTarget(enemyAttack); //this is the enemy attacking
                 }
                 else
                 {
-                    player.Attack(enemy, playerAttack, ref insight); //this is the player attacking
+                    player.AttackTarget(playerAttack); //this is the player attacking
 
-                    enemy.Attack(player, enemyAttack, ref insight); //this is the enemy attacking
+                    await Task.Delay(2000);
+
+                    enemy.AttackTarget(enemyAttack); //this is the enemy attacking
                 }
             }
             else
             {
-                dialog = "You dont have enough mana for this!";
+                DisplayDialgue("You dont have enough mana for this!");
             }
- 
-}
+            turnInProgress = false;
+        }
             
         }
 
