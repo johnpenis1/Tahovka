@@ -12,11 +12,14 @@ namespace Tahovka
 
         public static Dictionary<string, Item> Items = new Dictionary<string, Item>();
 
+        public static bool UsedItem = false;
+
         public string ID { get; set; }
 
         public int QUANTITY { get; set; }
         public string FLAVOR { get; set; }
         public Action<Unit> onUse { get; set; }
+
 
         public Unit itemOwner;
 
@@ -33,6 +36,11 @@ namespace Tahovka
 
         public void Use()
         {
+            if (UsedItem == true)
+            {
+                MainWindow.i.DisplayDialgue($"You already used an item this turn...");
+                return;
+            }
             if (QUANTITY > 0)
             {
                 onUse.Invoke(itemOwner);
@@ -41,7 +49,7 @@ namespace Tahovka
                 itemOwner.UpdateManaDisplay();
 
                 MainWindow.i.DisplayDialgue($"{itemOwner.NAME} used {ID}.");
-
+                UsedItem = true;
                 QUANTITY--;
             } else MainWindow.i.DisplayDialgue($"You are out of {ID}...");
 
