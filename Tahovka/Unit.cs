@@ -120,6 +120,18 @@ namespace Tahovka
             MainWindow.i.DisplayDialgue($"{attack.FlavorText}. The attack deals {damageTaken} damage to {NAME}.");
 
         }
+        public void TakeDamage(int baseDamage,bool special = false) 
+        {
+
+            int damageTaken = baseDamage - (special ? SDEF : DEF);
+            HP -= damageTaken;
+            HP = Math.Max(0, HP); // Clamp the health to be always above 0 (subnatica reference?)
+
+            
+            UpdateHealthDisplay();
+
+
+        }
 
         public async void AttackTarget(Attack attack)
         {
@@ -133,6 +145,8 @@ namespace Tahovka
                 Target.TakeDamage(this, attack); 
                                                                                                     
                 loopsCompleted++;
+
+                await Task.Delay(200);
             }
 
            
@@ -191,6 +205,11 @@ namespace Tahovka
             {
 
             }
+        }
+
+        public override string ToString()
+        {
+            return NAME;
         }
     }
 }

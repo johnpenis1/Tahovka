@@ -44,7 +44,7 @@ namespace Tahovka
 
             Item Jerky = new Item("jerky", 3,"A piece of Jerky, Heals 1500 hp",(unit) => { unit.HP += 1500; });
             Item Soda = new Item("soda",2, "A Diet Soda, Restores 200 SP", (unit) => { unit.SP += 200; });
-            Item Dynamite = new Item("dynamite", 2, "A powerful stick of dynamite, deals 2000 damage", (unit) => { unit.Target.HP -= 2000; });
+            Item Dynamite = new Item("dynamite", 2, "A powerful stick of dynamite, deals 2000 damage", (unit) => { unit.Target.TakeDamage(2000); });
             Item Coffee = new Item("coffee", 1, "A Quadruple Espresso, Restores SP and HP to max", (unit) => { unit.HP = unit.MAXHP; unit.SP = unit.MAXSP; });
 
 
