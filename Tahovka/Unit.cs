@@ -138,12 +138,17 @@ namespace Tahovka
            
         }
 
-        public static void Defend(int health, int basicdamage, int atkstat, int mult, int defense, int informativedamagevalue = 0)
+        public async void Defend(Unit attacker, Attack attack)
         {
             {
-                health -= basicdamage + ((atkstat * mult) - defense)/3;
-                informativedamagevalue = basicdamage + ((atkstat * mult) - defense)/ 3;
-            }
+                int damageTaken = attack.BaseDmg + ((attack.Special ? attacker.SATK : attacker.ATK) * attack.PowerMult) / 3 - (attack.Special ? SDEF : DEF);
+                HP -= damageTaken;
+                HP = Math.Max(0, HP); // its DEFO a subnautica reference
+
+                UpdateHealthDisplay();
+
+                MainWindow.i.DisplayDialgue($"{attack.FlavorText} but you guard! Dealt {damageTaken} damage to {NAME}!");
+            } // i could probably just make the text not account for the enemy guarding since they have no need for that
         }
         public static void CheckCondition(int playerhp, int playermaxhp, int playersp, int playermaxsp, int enemyhp, int enemymaxhp, bool iwon, bool ilost)
         {

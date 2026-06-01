@@ -60,8 +60,13 @@ namespace Tahovka
             {
                 CombatProcess(player,player.primaryAttack,Guillotina);
             };
+            // Binding Defend
+            DefendButton.Click += (sender, e) =>
+            {
+                CombatProcess(player, player.primaryAttack, Guillotina, true);
+            };
 
-            
+
             // Binding spells
 
             foreach (UIElement child in MagicMenu.Children)
@@ -114,7 +119,7 @@ namespace Tahovka
 
         public void DescriptionDisplay(Item item)
         {
-            FlavorText.Text = item.FLAVOR;
+            FlavorText.Text = item.FLAVOR + ", You have " + item.QUANTITY + " Left";
         }
 
         public void HideCombatMenu(object sender, EventArgs e)
@@ -167,47 +172,54 @@ namespace Tahovka
 
         public bool turnInProgress = false;
 
-        public async void CombatProcess(Unit player, Attack playerAttack, Unit enemy)
+        public async void CombatProcess(Unit player, Attack playerAttack, Unit enemy, bool defending)
         {
- 
+
             Attack enemyAttack = enemy.primaryAttack;
 
             if (enemyAttack == null || playerAttack == null || turnInProgress) return;
-            
-           
-            
 
-            if (player.SP-playerAttack.ManaValue >= 0)
+
+            if (defending == true)
             {
                 turnInProgress = true;
-                player.SP -= playerAttack.ManaValue;
-                player.UpdateManaDisplay();
-                if (player.SPEED >= enemy.SPEED) //Checking for Speed
-                {
-
-                    player.AttackTarget(playerAttack); //this is the player attacking
-
-                    await Task.Delay(2000); 
-
-                    enemy.AttackTarget(enemyAttack); //this is the enemy attacking
-                }
-                else
-                {
-                    player.AttackTarget(playerAttack); //this is the player attacking
-
-                    await Task.Delay(2000);
-
-                    enemy.AttackTarget(enemyAttack); //this is the enemy attacking
-                }
+                player.Defend(enemy, enemyAttack);
             }
             else
             {
-                DisplayDialgue("You dont have enough mana for this!");
+                if (player.SP - playerAttack.ManaValue >= 0)
+                {
+                    turnInProgress = true;
+                    player.SP -= playerAttack.ManaValue;
+                    player.UpdateManaDisplay();
+                    if (player.SPEED >= enemy.SPEED) //Checking for Speed
+                    {
+
+                        player.AttackTarget(playerAttack); //this is the player attacking
+
+                        await Task.Delay(2000);
+
+                        enemy.AttackTarget(enemyAttack); //this is the enemy attacking
+                    }
+                    else
+                    {
+                        player.AttackTarget(playerAttack); //this is the player attacking
+
+                        await Task.Delay(2000);
+
+                        enemy.AttackTarget(enemyAttack); //this is the enemy attacking
+                    }
+                }
+                else
+                {
+                    DisplayDialgue("You dont have enough mana for this!");
+                }
             }
             turnInProgress = false;
+            Item.UsedItem = false;
         }
-            
-        }
+
+    }
 
         /// This is the Template player.HP = (Player.Attack(enemy.HP, Punch.BaseDmg, player.ATK, Punch.PowerMult, enemy.DEF));
         ///
