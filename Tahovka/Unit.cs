@@ -137,13 +137,17 @@ namespace Tahovka
         {
 
             if (HP < 1) return; // if your guts and organs are on the floor, you cant attack
-             
             int loopsCompleted = 0;
 
             while (attack.Repeats > loopsCompleted)
             {
-                Target.TakeDamage(this, attack); 
-                                                                                                    
+                Target.TakeDamage(this, attack);
+                await Task.Delay(1250);
+                if (Target.HP < 1)
+                {
+                    loopsCompleted = attack.Repeats;
+                    return;
+                }
                 loopsCompleted++;
 
                 await Task.Delay(200);

@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tahovka"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1018" Width="1696">
-    
-        <Grid>
+        Title="Bibeo Game :heart:" Height="1018" Width="1696">
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -24,12 +24,16 @@
         <Button Content="Defend" FontSize="20"  Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefendButton" Height="72" Width="148"/>
         <TextBlock Text="Health: " Margin="38,8,322,307" Grid.Row="1" FontSize="20"/>
 
-        <TextBlock Text="0/0" Margin="106,8,2,294" Grid.Row="1" Name="PlayerHPAmount" FontSize="20"  />
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.RowSpan="2" Grid.Column="1" Margin="0,150,0,123" Width="572">
+            <Image Source="/images/Tina.png"/>
+        </StackPanel>
+
+         <TextBlock Text="0/0" Margin="106,8,2,294" Grid.Row="1" Name="PlayerHPAmount" FontSize="20"  />
         <TextBlock Text="0/0" Grid.Row="1" Margin="106,45,14,266" Name="ManaAmount" FontSize="20" />
         <TextBlock Text="Mana:" Margin="38,43,278,273" Grid.Row="1" FontSize="20"/>
         <TextBlock Text="Health:" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="20,28,0,300" Grid.Column="1" Width="74" Name="HealthBoss"/>
         <TextBlock Text="0/0" Grid.Row="0" Margin="0,50,0,508" Grid.ColumnSpan="2" Grid.Column="1" FontSize="20" Name="BossHP" HorizontalAlignment="Center" Width="340" TextAlignment="Center"/>
-        <TextBlock Text="1" Grid.ColumnSpan="4" HorizontalAlignment="Center" TextAlignment="Center" Width="400" Name="Dialogue"/>
+        <TextBlock Text="" Grid.ColumnSpan="4" HorizontalAlignment="Center" TextAlignment="Center" Width="572" Name="Dialogue" Margin="0,0,0,377" Grid.RowSpan="2"/>
         <TextBlock Text="" Grid.Row="0" Grid.Column="0" Name="FlavorText"/>
 
         <Grid Grid.Column="3" Name="MagicMenu" Visibility="Collapsed">
