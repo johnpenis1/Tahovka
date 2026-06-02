@@ -37,6 +37,11 @@ namespace Tahovka
 
         public void Use()
         {
+            if (itemOwner.Target.HP < 1)
+            {
+                MainWindow.i.DisplayDialgue("Its pointless to use this... the guy is dead!");
+                return;
+            }
             if (UsedItem == true)
             {
                 MainWindow.i.DisplayDialgue($"You already used an item this turn...");
@@ -48,6 +53,7 @@ namespace Tahovka
 
                 itemOwner.UpdateHealthDisplay();
                 itemOwner.UpdateManaDisplay();
+                itemOwner.Target.UpdateHealthDisplay();
 
                 MainWindow.i.DisplayDialgue($"{itemOwner.NAME} used {ID}.");
                 UsedItem = true;
