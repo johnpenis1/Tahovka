@@ -33,12 +33,13 @@ namespace Tahovka
             InitializeComponent();
             DataContext = this;
             i = this;
+            int tung = 0;
 
 
             Attack Punch = new Attack("Punch",20,2,0,false,1,"","You Punch with all your might"); 
-            Attack Fireball = new Attack("Fireball",50,2,30,true,1,"a magic attack that uses SP damage,", "You fire off a fireball, fire."); 
+            Attack Fireball = new Attack("Fireball",50,2,30,true,1,"a magic attack that uses SP damage", "You fire off a fireball, fire."); 
             Attack Flurry = new Attack("Flurry", 15,2,50,false,5,"a weak attack that hits multiple times", "You unleash a flurry of blows.");
-            Attack FistOfFaith = new Attack("Fist of Faith",250,4,100,false,2,"a High damage one hit attack", "You Channel all your Chi into the attack."); 
+            Attack FistOfFaith = new Attack("Fist of Faith",250,4,100,false,2,"a High damage two hit attack", "You Channel all your Chi into the attack."); 
             Attack FivePointFingerHeartExplodingTechnique = new Attack("Five Point Palm Exploding Heart Technique", 999999,10,0,true,10,"attack that instantly kills the unit, costs nothing and is for testing (you cheater!)", "DIIIIIIIE!!!"); // these are your attacks
             Attack Scratch = new Attack("Scratch",20, 2, 0, false, 1,"","Guillotina scratches you!");
 
@@ -55,16 +56,17 @@ namespace Tahovka
             player.Target = Guillotina;
             Guillotina.Target = player;
 
+
             // Binding primary attack
 
             AttackButton.Click += (sender, e) =>
             {
-                CombatProcess(player,player.primaryAttack,Guillotina);
+                CombatProcess(player, player.primaryAttack, Guillotina,false,0,tung);
             };
             // Binding Defend
             DefendButton.Click += (sender, e) =>
             {
-                CombatProcess(player, player.primaryAttack, Guillotina, true);
+                CombatProcess(player, player.primaryAttack, Guillotina, true,0,tung);
             };
 
 
@@ -78,7 +80,7 @@ namespace Tahovka
 
                     if (!player.Spells.ContainsKey(spellName)) continue; // if the element we're looping through doesnt exist as a spell, we go to the next element
 
-                    button.Click += (sender, e) => { CastMagicSpell(button.Content.ToString(), player, Guillotina); };
+                    button.Click += (sender, e) => { CastMagicSpell(button.Content.ToString(), player, Guillotina,tung); };
                     button.MouseEnter += (sender, e) => { DescriptionDisplay(player.Spells[spellName]); };
                 }
             }
@@ -103,6 +105,20 @@ namespace Tahovka
 
 
         // UI
+        public async void GuillotinaHurt(int repeats, int t)
+        {
+            for(t = 0;  t < repeats; t++)
+            {
+                tina.Visibility = Visibility.Hidden;
+                await Task.Delay(50);
+                tina.Visibility = Visibility.Visible;
+                await Task.Delay(50);
+                tina.Visibility = Visibility.Hidden;
+                await Task.Delay(50);
+                tina.Visibility = Visibility.Visible;
+                await Task.Delay(1250);
+            }
+        }
 
         public void DisplayDialgue(string dialogue)
         {
@@ -110,10 +126,10 @@ namespace Tahovka
             
         }
 
-        public void CastMagicSpell(string spellName, Unit player, Unit enemy)
+        public void CastMagicSpell(string spellName, Unit player, Unit enemy, int tung)
         {
 
-            CombatProcess(player, player.Spells[Utility.CleanseString(spellName)], enemy);
+            CombatProcess(player, player.Spells[Utility.CleanseString(spellName)], enemy, false,0 ,tung);
         }
 
         public void UseItem(string itemName, Unit player)
@@ -121,7 +137,6 @@ namespace Tahovka
             player.Items[itemName].Use();
 
         }
-
 
         public void DescriptionDisplay(Item item) // Item overload
         {
@@ -184,7 +199,7 @@ namespace Tahovka
 
         public bool turnInProgress = false;
         public int stupidthingfortiming = 0;
-        public async void CombatProcess(Unit player, Attack playerAttack, Unit enemy, bool defending = false, int stupidthingfortiming = 0)
+        public async void CombatProcess(Unit player, Attack playerAttack, Unit enemy, bool defending = false, int tung = 0, int stupidthingfortiming = 0)
         {
 
             Attack enemyAttack = enemy.primaryAttack;
@@ -213,7 +228,8 @@ namespace Tahovka
                     {
 
                         player.AttackTarget(playerAttack); //this is the player attacking
-                        stupidthingfortiming = (playerAttack.Repeats * 1250);
+                        GuillotinaHurt(playerAttack.Repeats, tung);
+                        stupidthingfortiming = (playerAttack.Repeats * 1250 + 100);
                         await Task.Delay(stupidthingfortiming);
 
                         enemy.AttackTarget(enemyAttack); //this is the enemy attacking
@@ -221,7 +237,8 @@ namespace Tahovka
                     else
                     {
                         player.AttackTarget(playerAttack); //this is the player attacking
-                        stupidthingfortiming = (playerAttack.Repeats * 1250);
+                        GuillotinaHurt(playerAttack.Repeats, tung);
+                        stupidthingfortiming = (playerAttack.Repeats * 1250 + 100);
                         await Task.Delay(stupidthingfortiming);
 
                         enemy.AttackTarget(enemyAttack); //this is the enemy attacking

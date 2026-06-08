@@ -24,9 +24,10 @@
         <Button Content="Defend" FontSize="20"  Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefendButton" Height="72" Width="148"/>
         <TextBlock Text="Health: " Margin="38,8,322,307" Grid.Row="1" FontSize="20"/>
 
-        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.RowSpan="2" Grid.Column="1" Margin="0,150,0,123" Width="572">
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.RowSpan="2" Grid.Column="1" Margin="0,150,0,123" Width="572" Name="tina">
             <Image Source="/images/Tina.png"/>
         </StackPanel>
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.RowSpan="1" Grid.Column="1" Grid.Row="1" Margin="1,200,0,37" Width="150" Name="roda"/>
 
         <TextBlock Text="0/0" Margin="106,8,2,294" Grid.Row="1" Name="PlayerHPAmount" FontSize="20"  />
         <TextBlock Text="0/0" Grid.Row="1" Margin="106,45,14,266" Name="ManaAmount" FontSize="20" />

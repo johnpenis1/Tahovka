@@ -180,6 +180,7 @@ namespace Tahovka
                 {
                     loopsCompleted = attack.Repeats;
                     return;
+                    
                 }
                 loopsCompleted++;
 
@@ -210,14 +211,6 @@ namespace Tahovka
             else if (playerhp <= 0)
             {
                  ilost = true;
-            }
-            if (playersp > playermaxsp)
-            {
-                 playersp = playermaxsp;
-            }
-            if (enemyhp > enemymaxhp)
-            {
-                 enemyhp = enemymaxhp;
             }
             else if (enemyhp <= 0)
             {
