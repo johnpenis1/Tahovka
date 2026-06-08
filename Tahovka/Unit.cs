@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Tahovka
 {
@@ -27,27 +29,52 @@ namespace Tahovka
         public int SATK;
         public int SPEED;
         public Attack primaryAttack;
-        public List<Attack> Spells = new List<Attack>();
+        //public List<Attack> Spells = new List<Attack>();
 
         public Dictionary<string, Item> Items = new Dictionary<string, Item>();
+        public Dictionary<string, Attack> Spells = new Dictionary<string, Attack>();
         public Unit Target;
 
-        public Unit(string name,int maxhp,TextBlock HealthDisplay,TextBlock ManaDisplay = null, int maxsp = 0, int def = 0, int atk = 1, int sdef = 0, int satk = 1, int speed = 1,Attack PrimaryAttack = null, List<Attack> spells = null, List<Item> items = null)
+        public ScaleTransform healthBar;
+        public ScaleTransform manaBar;
+
+
+
+        public Unit(string name,int maxhp,TextBlock HealthDisplay, ScaleTransform HealthBar, TextBlock ManaDisplay = null, ScaleTransform ManaBar = null, int maxsp = 0, int def = 0, int atk = 1, int sdef = 0, int satk = 1, int speed = 1,Attack PrimaryAttack = null, List<Attack> spells = null, List<Item> items = null)
         {
             NAME = name;
+
             MAXHP = maxhp;
             HP = MAXHP;
+
             MAXSP = maxsp;
             SP = MAXSP;
+
             DEF = def;
             ATK = atk;
+
             SDEF = sdef;
             SATK = satk;
+
             SPEED = speed;
-            Spells = spells;
+            
             primaryAttack = PrimaryAttack;
+
             healthDisplay = HealthDisplay;
             manaDisplay = ManaDisplay;
+
+            healthBar = HealthBar;
+            manaBar = ManaBar;
+
+            
+            if (spells != null)
+            {
+                foreach (var spell in spells)
+                {
+                    Spells[Utility.CleanseString(spell.Name)] = spell; // add the spell to the dictionary with a cleansed version of its name as the key
+                }
+            }
+            
 
             if (items != null) AddItems(items); 
 
@@ -55,28 +82,32 @@ namespace Tahovka
             UpdateManaDisplay();
         }
 
-        public Attack GetAttackFrom(string attackName)
-        {
+        //public Attack GetAttackFrom(string attackName)
+        //{
 
 
-            foreach (Attack attack in Spells)
-            {
+        //    foreach (Attack attack in Spells)
+        //    {
 
-                if (Utility.CleanseString(attackName) == Utility.CleanseString(attack.Name))
-                {
-                    Debug.WriteLine($"found attack: {attack.Name}");
-                    return attack;
-                }
-            }
+        //        if (Utility.CleanseString(attackName) == Utility.CleanseString(attack.Name))
+        //        {
+        //            Debug.WriteLine($"found attack: {attack.Name}");
+        //            return attack;
+        //        }
+        //    }
 
-            return primaryAttack; // fallback
+        //    return primaryAttack; // fallback
            
-        }
+        //}
 
         public void UpdateHealthDisplay()
         {
             HP = Utility.Clamp(HP, 0, MAXHP);
             healthDisplay.Text = $"{HP}/{MAXHP}";
+
+            healthBar.ScaleX = Utility.Clamp((HP / (double)MAXHP), 0,1);
+
+            Debug.WriteLine($"HealthBar Width: {healthBar.ScaleX}");
         }
         public void UpdateManaDisplay()
         {
@@ -85,7 +116,9 @@ namespace Tahovka
             SP = Utility.Clamp(SP,0, MAXSP);
 
             manaDisplay.Text = $"{SP}/{MAXSP}";
-            
+
+            manaBar.ScaleX = Utility.Clamp((SP / (double)MAXSP), 0, 1);
+
         }
 
         public void AddItem(Item item)
@@ -118,7 +151,7 @@ namespace Tahovka
             UpdateHealthDisplay();
 
             MainWindow.i.DisplayDialgue($"{attack.FlavorText}. The attack deals {damageTaken} damage to {NAME}.");
-
+            
         }
         public void TakeDamage(int baseDamage,bool special = false) 
         {

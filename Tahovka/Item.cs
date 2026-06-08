@@ -54,6 +54,7 @@ namespace Tahovka
                 itemOwner.UpdateHealthDisplay();
                 itemOwner.UpdateManaDisplay();
                 itemOwner.Target.UpdateHealthDisplay();
+                MainWindow.i.DescriptionDisplay(this);
 
                 MainWindow.i.DisplayDialgue($"{itemOwner.NAME} used {ID}.");
                 UsedItem = true;

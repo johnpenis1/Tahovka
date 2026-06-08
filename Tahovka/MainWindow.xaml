@@ -28,7 +28,7 @@
             <Image Source="/images/Tina.png"/>
         </StackPanel>
 
-         <TextBlock Text="0/0" Margin="106,8,2,294" Grid.Row="1" Name="PlayerHPAmount" FontSize="20"  />
+        <TextBlock Text="0/0" Margin="106,8,2,294" Grid.Row="1" Name="PlayerHPAmount" FontSize="20"  />
         <TextBlock Text="0/0" Grid.Row="1" Margin="106,45,14,266" Name="ManaAmount" FontSize="20" />
         <TextBlock Text="Mana:" Margin="38,43,278,273" Grid.Row="1" FontSize="20"/>
         <TextBlock Text="Health:" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="20,28,0,300" Grid.Column="1" Width="74" Name="HealthBoss"/>
@@ -50,6 +50,32 @@
             <Button Name="Coffee" Grid.Row="0" Grid.Column="3" Height="50" Content="Coffee" FontSize="20" VerticalAlignment="Top" Margin="0, 180"/>
             <Button Grid.Row="0" Grid.Column="3" Height="50" VerticalAlignment="Top" Width="50" HorizontalAlignment="Right" Content="X" FontSize="30" Click="HideItemMenu"/>
         </Grid>
+
+        <Rectangle HorizontalAlignment="Left" Height="21" Margin="210,13,0,0" Stroke="Black" VerticalAlignment="Top" Width="163" Grid.Row="1" Fill="#FF1C9E01"/>
+
+        <Rectangle HorizontalAlignment="Left" Height="19" Margin="211,14,0,0" VerticalAlignment="Top" Width="161" Fill="#FF66EC2B" Grid.Row="1" RenderTransformOrigin="0,0.5">
+            <Rectangle.RenderTransform>
+                <ScaleTransform x:Name="HealthBar" ScaleX="1" />
+            </Rectangle.RenderTransform>
+        </Rectangle>
+
+        <Rectangle HorizontalAlignment="Left" Height="21" Margin="208,50,0,0" Stroke="Black" VerticalAlignment="Top" Width="165" Grid.Row="1" Fill="#FF003FBB"/>
+
+        <Rectangle HorizontalAlignment="Left" Height="19" Margin="209,51,0,0" VerticalAlignment="Top" Width="163" Fill="#FF2B75EC" Grid.Row="1" RenderTransformOrigin="0,0.5">
+            <Rectangle.RenderTransform>
+                <ScaleTransform x:Name="ManaBar" ScaleX="1" />
+            </Rectangle.RenderTransform>
+        </Rectangle>
+
+
+
+        <Rectangle HorizontalAlignment="Center" Height="21" Margin="0,82,0,0" VerticalAlignment="Top" Width="248" Grid.Column="1" Grid.ColumnSpan="2" Stroke="Black" Fill="#FF900000" />
+
+        <Rectangle HorizontalAlignment="Center" Height="19" Margin="0,83,0,0" VerticalAlignment="Top" Width="247" Grid.Column="1" Grid.ColumnSpan="2" Fill="#FFFF3211" RenderTransformOrigin="0,0.5">
+            <Rectangle.RenderTransform>
+                <ScaleTransform x:Name="BossBar" ScaleX="1" />
+            </Rectangle.RenderTransform>
+        </Rectangle>
 
     </Grid>
 </Window>

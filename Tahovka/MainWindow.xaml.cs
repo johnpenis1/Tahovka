@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -35,8 +36,8 @@ namespace Tahovka
 
 
             Attack Punch = new Attack("Punch",20,2,0,false,1,"","You Punch with all your might"); 
-            Attack Fireball = new Attack("Fireball",50,2,30,true,1,"a magic attack that uses SP damage, costs 30 mana", "You fire off a fireball, fire."); 
-            Attack Flurry = new Attack("Flurry", 15,2,50,false,5,"a weak attack that hits multiple times, Costs 50 Mana", "You unleash a flurry of blows.");
+            Attack Fireball = new Attack("Fireball",50,2,30,true,1,"a magic attack that uses SP damage,", "You fire off a fireball, fire."); 
+            Attack Flurry = new Attack("Flurry", 15,2,50,false,5,"a weak attack that hits multiple times", "You unleash a flurry of blows.");
             Attack FistOfFaith = new Attack("Fist of Faith",250,4,100,false,2,"a High damage one hit attack", "You Channel all your Chi into the attack."); 
             Attack FivePointFingerHeartExplodingTechnique = new Attack("Five Point Palm Exploding Heart Technique", 999999,10,0,true,10,"attack that instantly kills the unit, costs nothing and is for testing (you cheater!)", "DIIIIIIIE!!!"); // these are your attacks
             Attack Scratch = new Attack("Scratch",20, 2, 0, false, 1,"","Guillotina scratches you!");
@@ -48,8 +49,8 @@ namespace Tahovka
             Item Coffee = new Item("coffee", 1, "A Quadruple Espresso, Restores SP and HP to max", (unit) => { unit.HP = unit.MAXHP; unit.SP = unit.MAXSP; });
 
 
-            Unit Guillotina = new Unit("Guillotina", HealthDisplay: BossHP, maxhp: 10000, def: 10, atk: 30, sdef: 15, satk: 30, speed: 1, PrimaryAttack: Scratch);
-            Unit player = new Unit("Player", HealthDisplay: PlayerHPAmount, ManaDisplay: ManaAmount, maxhp: 2000, maxsp: 400, def: 30, atk: 50, sdef: 15, satk: 30, speed: 50, PrimaryAttack: Punch, spells: new List<Attack>() { Fireball, FistOfFaith, FivePointFingerHeartExplodingTechnique, Flurry },items: Item.Items.Values.ToList());
+            Unit Guillotina = new Unit("Guillotina", HealthDisplay: BossHP,HealthBar: BossBar, maxhp: 10000, def: 10, atk: 30, sdef: 15, satk: 30, speed: 1, PrimaryAttack: Scratch);
+            Unit player = new Unit("Player", HealthDisplay: PlayerHPAmount, HealthBar: HealthBar, ManaDisplay: ManaAmount, ManaBar: ManaBar,maxhp: 2000, maxsp: 400, def: 30, atk: 50, sdef: 15, satk: 30, speed: 50, PrimaryAttack: Punch, spells: new List<Attack>() { Fireball, FistOfFaith, FivePointFingerHeartExplodingTechnique, Flurry },items: Item.Items.Values.ToList());
 
             player.Target = Guillotina;
             Guillotina.Target = player;
@@ -73,7 +74,12 @@ namespace Tahovka
             {
                 if (child is Button button)
                 {
-                    button.Click += (sender, e) => { CastMagicSpell(button.Content.ToString(), player, Guillotina); } ;
+                    string spellName = Utility.CleanseString(button.Content.ToString());
+
+                    if (!player.Spells.ContainsKey(spellName)) continue; // if the element we're looping through doesnt exist as a spell, we go to the next element
+
+                    button.Click += (sender, e) => { CastMagicSpell(button.Content.ToString(), player, Guillotina); };
+                    button.MouseEnter += (sender, e) => { DescriptionDisplay(player.Spells[spellName]); };
                 }
             }
 
@@ -87,7 +93,7 @@ namespace Tahovka
 
                     if (!player.Items.ContainsKey(buttonName)) continue; // if the element we're looping through doesnt exist as an item, we go to the next element
 
-                    button.Click += (sender, e) => { UseItem(buttonName, player); } ;
+                    button.Click += (sender, e) => { UseItem(buttonName, player); };
                     button.MouseEnter += (sender, e) => { DescriptionDisplay(player.Items[buttonName]); };
                 }
             }
@@ -107,7 +113,7 @@ namespace Tahovka
         public void CastMagicSpell(string spellName, Unit player, Unit enemy)
         {
 
-            CombatProcess(player, player.GetAttackFrom(spellName), enemy);
+            CombatProcess(player, player.Spells[Utility.CleanseString(spellName)], enemy);
         }
 
         public void UseItem(string itemName, Unit player)
@@ -117,11 +123,17 @@ namespace Tahovka
         }
 
 
-        public void DescriptionDisplay(Item item)
+        public void DescriptionDisplay(Item item) // Item overload
         {
-            FlavorText.Text = item.FLAVOR + ", You have " + item.QUANTITY + " Left";
+            
+            FlavorText.Text = $"{item.FLAVOR}, You have {item.QUANTITY} Left";
+
         }
 
+        public void DescriptionDisplay(Attack attack) // Attack overload
+        {
+            FlavorText.Text = $"{attack.Description}, Costs {attack.ManaValue} Mana";
+        }
         public void HideCombatMenu(object sender, EventArgs e)
         {
             DefendButton.Visibility = Visibility.Collapsed;
